@@ -6,7 +6,7 @@ using Plots, LaTeXStrings   # Se importan las paqueterías
 ## 1. Triángulo de Pascal
 
 
-function PascalTriangle(order) 
+function pascal_triangle(order) 
     # Esta función genera un triángulo de Pascal a un orden deseado. Primero se obtiene la dimensión de filas
     # y columnas para inicializar una matriz de enteros con esas dimensiones.
     # A partir de dos ciclos "for" anidados se accede primero a la primera fila para colocar el primer uno en su 
@@ -18,9 +18,9 @@ function PascalTriangle(order)
     M_col = 2*ord + 1; 
     M = zeros(Int, M_row, M_col) 
 
-    for i in 1:1:M_row
+    for i in 1:M_row
         if i==1
-            for j in 1:1:M_col
+            for j in 1:M_col
                 if j == M_row
                     M[i,j]=1
                 else
@@ -30,7 +30,7 @@ function PascalTriangle(order)
         else
             M[i,1]=0;
             M[i,M_col]=0
-            for j in 2:1:(M_col-1)
+            for j in 2:(M_col-1)
                 M[i,j]=M[i-1, j-1] + M[i-1, j+1]
             end
         end        
@@ -45,7 +45,7 @@ function PascalTriangle(order)
 end
 
 
-function BinaryPascal(P)
+function binary_pascal(P)
     # Esta función tiene como argumento una matriz, la cual, en principio, debe contener un triángulo de Pascal.
     # A partir de la matriz P, se obtienen sus dimensiones y se discrimina con un if-else, cuando tenemos un 
     # valor par -> 0  o un valor impar -> 1
@@ -62,39 +62,37 @@ function BinaryPascal(P)
     return P
 end
 
-function Dot_drawing(order)
-    # Esta función genera un triángulo de Pascal llamando a la función "PascalTriangle(order)". A partir de este 
-    # este triángulo, obtenemos sus dimensiones y creamos una nueva matriz de "Strings" con las mismas dimensiones.  
-    # 
+function dot_drawing(order)
+    # Esta función genera un triángulo de Pascal llamando a la función "pascal_ triangle(order)" para despues generar el triángulo 
+    # binario llamando a la función "binary_pascal(P)". A partir de este triángulo, obtenemos sus dimensiones.  
 
-    P = PascalTriangle(order)
+    P = pascal_triangle(order)
+    P = binary_pascal(P)
     M_row = size(P, 1)
     M_col = size(P, 2)
-    M = Matrix{String}(undef, M_row, M_col)
     
-    # Con un ciclo for anidado, distinguimos los valores pares e impares del triángulo de Pascal, y colocamos un espacios
-    # o un punto dependiendo de lo anterior, en el mismo indice pero en la matriz de Strings.
+    # Con un ciclo for anidado, distinguimos los valores triángulo de Pascal binario, guardamos las coordenadas en caso de 
+    # que el valor sea 1. Usamos la función "scatter()" para graficar el punto.
+    p = scatter()
     for i in 1:M_row
         for j in 1:M_col
-            if iseven(P[i,j])
-                M[i,j] = "   " ; 
-            else 
-                M[i,j] = " . " 
+            if P[i,j] == 1
+                scatter!([j], [M_row - i], 
+                markersize = 1.0,           
+                markerstrokewidth = 0,      
+                color = :blue) 
             end
         end
     end
     
-    # La función join une todos los elementos de la fila 'i' en un solo texto, esto se muestra en pantalla para que solo
-    # solo se observen los espacios y los puntos.
-    for i in 1:size(M, 1)
-        println(join(M[i, :])) 
-    end
+    display(p)
+   
 end
 
-TrianguloPascal = PascalTriangle(8)
-TriangPascalBinario = BinaryPascal(TrianguloPascal)
-PuntosOrden256 = Dot_drawing(256)
-PuntosOrden10 = Dot_drawing(1024)
+TrianguloPascal = pascal_triangle(8)
+TriangPascalBinario = binary_pascal(TrianguloPascal)
+PuntosOrden256 = dot_drawing(256)
+PuntosOrden10 = dot_drawing(1024)
 
 
 
