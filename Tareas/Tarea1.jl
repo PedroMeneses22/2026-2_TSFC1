@@ -8,17 +8,17 @@
 # matriz de enteros, en la que cada renglón representa un orden distinto.
 # Hagan que la apariencia de este vector sea lo más simétrico posible.
 
-#Para poner el orden del triangulo:
+
 """
-Función para imprimir el triangulo de pascal de orden ord a partir de una matriz de 
+Función para crear el triangulo de pascal de orden ord a partir de una matriz de 
 enteros cuadrada de longitud ord, en la que cada renglón representa un orden distinto. 
 Al principio es una matriz de ceros y poco a poco se va llenando cada renglón hasta formar 
 una matriz diagonal que será nuestro triángulo de Pascal.  
 """
 
-function triangulo_pascal(ord)
-    
-    # matriz de enteros
+function triangulo_pascal(ord::Int)
+
+    #matriz de enteros
     A = zeros(Int, ord, ord)
 
     for i in 1:ord
@@ -29,18 +29,34 @@ function triangulo_pascal(ord)
             A[i,j] = A[i-1,j-1] + A[i-1,j]
         end
     end
-
-    # impresión simétrica
-    for i in 1:ord
-        espacios = " "^(ord - i)
-        fila = join(A[i,1:i], " ")
-        println(espacios * fila)
-    end
-
     return A
 end
 
-triangulo_pascal(20)
+
+"""
+Función que imprime un triangulo simétrico a partir de la diagonal de una matriz cuadrada. 
+En el contexto de este problema nos ayudará a ver el triángulo de pascal.
+"""
+
+function imprimir_diagonal_triangulo(A::Matrix{Int})
+
+    ord = size(A)[1]
+    if size(A)[1] != size(A)[2]
+        return "Debe ser una matriz cuadrada"
+    
+    #Impresión simétrica
+    else
+        for i in 1:ord
+            espacios = " "^(ord - i)
+            fila = join(A[i,1:i], " ")
+            println(espacios * fila)
+        end
+    end
+end
+
+triangulo_pascal(6)
+
+imprimir_diagonal_triangulo(triangulo_pascal(6))
 
 
 
@@ -49,8 +65,40 @@ triangulo_pascal(20)
 # como 0 y 1, respectivamente. Las funciones `isodd` o `iseven` pueden
 # serles útiles.
 #
+
+"""
+Función que convierte cualquier matriz de 2 dimensiones de enteros en una nueva matriz de 
+booleanos, si el número es par entonces coloca 'false' y si es impar coloca 'true'.
+"""
+
+
+function par_impar_matriz(mat::Matrix{Int})
+    #Mide la matriz 
+    rangos = size(mat)
+    #Crea una nueva matriz de enteros
+    A = zeros(Int, rangos)
+    for j in 1:rangos[2]
+        for i in 1:rangos[1]
+            #Verifica si el número es par o impar
+            if isodd(mat[i,j])
+                A[i,j] = true
+            elseif iseven(mat[i,j])
+                A[i,j] = false
+            end
+        end
+    end
+    return A
+end
+
+par_impar_matriz(triangulo_pascal(6))
+
+imprimir_diagonal_triangulo(par_impar_matriz(triangulo_pascal(6)))
+
+
 # c. Dibujen (con puntos) todos los valores impares del triángulo de Pascal
 # para `ord=256`. Repitan el ejercicio para `ord=1024`.
+
+
 
 
 # ## 2. Triángulo equilátero
