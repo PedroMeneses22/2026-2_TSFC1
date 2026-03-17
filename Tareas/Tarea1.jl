@@ -98,9 +98,38 @@ imprimir_diagonal_triangulo(par_impar_matriz(triangulo_pascal(6)))
 # c. Dibujen (con puntos) todos los valores impares del triángulo de Pascal
 # para `ord=256`. Repitan el ejercicio para `ord=1024`.
 
+using Pkg
+Pkg.add("Plots")
+using Plots
 
+function plot_pascal_impares(A)
 
+    ord = size(A,1)
 
+    # solo tomar la parte triangular
+    B = zeros(Int, ord, ord)
+
+    for i in 1:ord
+        for j in 1:i
+            B[i,j] = A[i,j]
+        end
+    end
+
+    heatmap(
+        reverse(B, dims=1),
+        color = [:white :black],
+        legend = false,
+        axis = false,
+        aspect_ratio = 1
+    )
+end
+
+ord = 256
+
+P = triangulo_pascal(ord)
+B = par_impar_matriz(P)
+
+plot_pascal_impares(B)
 # ## 2. Triángulo equilátero
 #
 # Sean $X_1$, $X_2$ y $X_3$ los vértices de un triángulo equilátero en el
