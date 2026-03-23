@@ -18,22 +18,20 @@ function pascal_triangle(order)
     M_col = 2*ord + 1; 
     M = zeros(Int, M_row, M_col) 
 
-    for i in 1:M_row
-        if i==1
-            for j in 1:M_col
-                if j == M_row
-                    M[i,j]=1
-                else
-                    M[i,j]=0 
-                end
-            end
+    for j in 1:M_col
+        if j == M_row
+             M[1,j]=1
         else
-            M[i,1]=0;
-            M[i,M_col]=0
-            for j in 2:(M_col-1)
-                M[i,j]=M[i-1, j-1] + M[i-1, j+1]
-            end
-        end        
+             M[1,j]=0 
+        end
+    end
+
+    for i in 2:M_row
+        M[i,1]=0;
+        M[i,M_col]=0
+        for j in 2:(M_col-1)
+            M[i,j]=M[i-1, j-1] + M[i-1, j+1]
+        end       
     end
 
     # En el ciclo for anidado para i>1, se coloca cero por default en la columna inicial y final, las siguientes dos
@@ -44,53 +42,43 @@ function pascal_triangle(order)
     return M
 end
 
-
-function binary_pascal(P)
-    # Esta función tiene como argumento una matriz, la cual, en principio, debe contener un triángulo de Pascal.
-    # A partir de la matriz P, se obtienen sus dimensiones y se discrimina con un if-else, cuando tenemos un 
-    # valor par -> 0  o un valor impar -> 1
-
-    for i in 1:size(P,1)
-        for j in 1:size(P,2)
-            if iseven(P[i,j])
-                P[i,j]=0;
-            else 
-                P[i,j]=1;
-            end
-        end
-    end
-    return P
-end
-
 function dot_drawing(order)
-    # Esta función genera un triángulo de Pascal llamando a la función "pascal_ triangle(order)" para despues generar el triángulo 
-    # binario llamando a la función "binary_pascal(P)". A partir de este triángulo, obtenemos sus dimensiones.  
+    # Esta función genera un triángulo de Pascal llamando a la función "pascal_triangle(order)". Después, se usa
+    # broadcasting (isodd.) para convertir todos los números impares en 1 y los pares en 0 de forma simultánea.
 
     P = pascal_triangle(order)
-    P = binary_pascal(P)
+    P = Int.(isodd.(P)) # Evaluamos si cada elemento de P es impar y lo convertimos a entero (1 o 0)
     M_row = size(P, 1)
     M_col = size(P, 2)
+    x_dot = Vector{Int64}()
+    y_dot = Vector{Int64}()
     
     # Con un ciclo for anidado, distinguimos los valores triángulo de Pascal binario, guardamos las coordenadas en caso de 
-    # que el valor sea 1. Usamos la función "scatter()" para graficar el punto.
+    # que el valor sea 1. 
     p = scatter()
     for i in 1:M_row
         for j in 1:M_col
             if P[i,j] == 1
-                scatter!([j], [M_row - i], 
-                markersize = 1.0,           
-                markerstrokewidth = 0,      
-                color = :blue) 
+                push!(x_dot, j) 
+                push!(y_dot, (M_row - i)) 
             end
         end
     end
     
+    # Usamos la función "scatter()" para graficar el vector de puntos guardado.
+    p = scatter!(x_dot, y_dot, 
+                markersize = 1.0,           
+                markerstrokewidth = 0,      
+                color = :blue) 
+
     display(p)
    
 end
 
 TrianguloPascal = pascal_triangle(8)
 TriangPascalBinario = binary_pascal(TrianguloPascal)
+# Se usa broadcasting (isodd.) para convertir todos los números impares en 1 y los pares en 0 de forma simultánea
+T2 = Int.(isodd.(TrianguloPascal)) 
 PuntosOrden256 = dot_drawing(256)
 PuntosOrden10 = dot_drawing(1024)
 
