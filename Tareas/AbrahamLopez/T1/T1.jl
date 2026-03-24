@@ -1,8 +1,9 @@
 # Tarea 1
 
 begin
+    using Plots
     """
-    Genera un triángulo de Pascal de orden _ord_, donde los espacios vacios son ceros.
+    Genera un triángulo de Pascal de orden _ord - 1_, donde los espacios vacios son ceros.
     No hace uso del binomio de Newton.
     """
     function trianguloPascal(ord)
@@ -10,7 +11,7 @@ begin
         for j = 1:ord # Iteracion filas
             tP[j,ord-j+1] = 1 # Diagonal de 1s
             for i = 1:ord # Iteracion columnas
-                if (j > 2) & (iseven(i-ord+j-1)) & (i-ord+j-1 > 0) # No ocurre en las primeras dos filas. Suma en columnas pares después del 1
+                if (j > 2) && (iseven(i-ord+j-1)) && (i-ord+j-1 > 0) # No ocurre en las primeras dos filas. Suma en columnas pares después del 1
                     if iseven(j) # Filas pares
                         tP[j,i] = tP[j-1, i-1] + tP[j-1, i+1]
                     else # Filas nones
@@ -34,12 +35,7 @@ begin
     function parNon(ord)
         m = trianguloPascal(ord)
         m2 = copy(m)
-        i = 1
-        for x in m
-            m2[i] = x != 0 ? iseven(x) ? 0 : 1 : 5
-            i += 1
-        end
-        return replace!(string.(m2), "5" => "")
+        return isodd.(m2)
     end
 
     """
@@ -49,21 +45,26 @@ begin
     """
     function dots(ord)
         m = parNon(ord)
-        m2 = copy(m)
-        i = 1
-        for x in m
-            m2[i] = isempty(x) ? "" : x == "1" ? "." : ""
-            i += 1
-        end
-
-        # Impresion de puntos bonita
-        for j in 1:ord
-            for i in 1:(2*ord)-1
-                print(isempty(m2[j,i]) ? " " : m2[j,i])
+        x = Float64[]
+        y = Float64[]
+        n = size(m)
+        for a in 1:n[1]
+            for b in 1:n[2]
+                m[a,b] == 1 && (push!(x, b - 1);push!(y,n[1] - a))
             end
-            print("\n")
         end
+        p = scatter(x, y,
+            # La formula usada en markersize una funcion logartimica con
+            # asintota en 4.5 que toca los puntos (1,6) y (1024, 0.01).
+            # Esto para que los puntos mas o menos se adapten segun el 
+            # orden del triangulo de Pascal.
+            markersize = -1.056*log(ord-4.5)+7.323,
+            markercolor = :blue,
+            fillalpha = 0.2,
+            legend = false
+        )
     end
+    dots(1024)
 end
 
 begin
@@ -76,7 +77,7 @@ begin
     function genVec()
         p = [0,0]
         # Checar que el vector este dentro de los limites
-        while ((p[2] >= sqrt(3)*p[1]) | (p[2] >= -sqrt(3)*(p[1]-2)) | (p[1] == 0) | (p[2] == 0)) 
+        while ((p[2] >= sqrt(3)*p[1]) || (p[2] >= -sqrt(3)*(p[1]-2)) || (p[1] == 0) | (p[2] == 0)) 
             p = [2*rand(), sqrt(3)*rand()]
         end
         return p
@@ -88,7 +89,7 @@ begin
     3 -> (1, √3).
     """
     function getAxis()
-        A = ceil(3*rand())
+        A = rand(1:3)
         return A == 1.0 ? [0,0] : A == 2 ? [2,0] : [1, sqrt(3)]
     end
 
@@ -96,7 +97,7 @@ begin
     Obtiene las coordenas del punto medio entre dos puntos.
     """
     function midpoint(p,A)
-        return [abs(p[1]+A[1])/2,abs(p[2]+A[2])/2]
+        return (p .+ A) ./ 2
     end
 
     """
@@ -106,10 +107,11 @@ begin
     dos vectores de longitud _n_.
     """
     function getData(n)
-        xData = []
-        yData = []
+        xData = Float64[]
+        yData = Float64[]
         p = genVec()
         A = getAxis()
+        mp = [Float64[],Float64[]]
         for i in 1:n
             mp = midpoint(p,A)
             push!(xData, mp[1])
@@ -152,18 +154,22 @@ begin
         drawData(x,y)
     end
 
+    genAndSee(50000)
+end
+
+begin
     """
     Encuentra un punto 1/3 entre dos puntos. Para type = 1, se elige el punto 1/3 hacia el vértice, para 2 el punto 1/3 hacia el punto arbitrario, y 
     para 3 se elige una opción aleatoria entre estas dos para cada iteración.
     """
     function oneThirdPoint(p,A,type)
         if type == 1
-            return [A[1]+((1/3)*(p[1]-A[1])),A[2]+((1/3)*(p[2]-A[2]))]
+            return A .+ (p .- A) ./ 3
         elseif type == 2
-            return [p[1]+((1/3)*(A[1]-p[1])),p[2]+((1/3)*(A[2]-p[2]))]
+            return p .+ (A .- p) ./ 3
         elseif type == 3
             randNum = ceil(2*rand())
-            return [A[1]+((randNum/3)*(p[1]-A[1])),A[2]+((randNum/3)*(p[2]-A[2]))]
+            return A .+ (randNum/3) .* (p .- A)
         end
     end
 
@@ -178,6 +184,7 @@ begin
         yData = []
         p = genVec()
         A = getAxis()
+        mp = [Float64[], Float64[]]
         for i in 1:n
             mp = oneThirdPoint(p,A,type)
             push!(xData, mp[1])
@@ -199,14 +206,16 @@ begin
         x,y = getDataT(n,type)
         drawData(x,y)
     end
+
+    genAndSeeT(10000,1)
 end
 
-begin
-    using Pkg
-    Pkg.activate(".")
-    Pkg.add("CairoMakie")
-end
+# begin
+#     using Pkg
+#     Pkg.activate(".")
+#     Pkg.add("CairoMakie")
+# end
 
-begin
-    using CairoMakie
-end
+# begin
+#     using CairoMakie
+# end
