@@ -1,10 +1,12 @@
 # # Tarea 1
-
+# Por: Meneses Orozco Pedro Damian.
 # Tarea 1
+begin
+    using Pkg
+    Pkg.add("Plots") #Añadimos la paquetería Plots para poder dibujar
+    using Plots #Cargamos la paquetería Plots    
+end
 
-using Pkg
-Pkg.add("Plots") #Añadimos la paquetería Plots para poder dibujar
-using Plots #cargamos la paquetería Plots
 
 # ## 1. Triángulo de Pascal
 #
@@ -14,10 +16,10 @@ using Plots #cargamos la paquetería Plots
 
 
 #=
-Función para crear el triangulo de pascal de orden ord a partir de una matriz de 
+Función para crear el triángulo de Pascal de orden ord a partir de una matriz de 
 ceros de renglones ord y columnas 2*ord - 1, en la que cada renglón representa un orden distinto. 
-Al principio es una matriz de ceros, despues en la primera columna, renglon ord ponemos el primer
-valor (A[1,ord] = 1), después se realiza un doble bucle for. Un for para cada renglon
+Al principio es una matriz de ceros, después en la primera columna, renglón ord ponemos el primer
+valor (A[1,ord] = 1), después se realiza un doble bucle for. Un for para cada renglón
 evitando que nos salgamos del tamaño de la matriz con condicionales if y elseif, y en el else 
 se realiza el algoritmo de suma que da los valores en el triángulo de Pascal  
 =#
@@ -44,7 +46,7 @@ end
 
 A = triangulo_pascal(4)
 #=
-Función que imprime un triangulo simétrico a partir de la matriz del triangulo de pascal
+Función que imprime un triángulo simétrico a partir de la matriz del triángulo de Pascal
 utilizando 3 matrices, la matriz de enteros A, la matriz de booleanos mask (que toma en cuenta
 donde la matriz A es cero) y la matriz de strings B, todas del mismo orden, donde al final utilicé 
 para imprimir los renglones de la matriz B.
@@ -96,7 +98,8 @@ par_impar_matriz(A)
 
 
 
-#= Función que toma como argumento el orden del triángulo de Pascal (ord) para dibujar
+#= 
+Función que toma como argumento el orden del triángulo de Pascal (ord) para dibujar
 con puntos los impares del triángulo, para eso primero creamos la matriz de booleanos utilizando 
 las 2 funciones anteriores (mat = par_impar_matriz(triangulo_pascal(ord))) y definimos nuestros 
 2 vectores de enteros: x e y que tendrán los datos de las coordenadas de los puntos.
@@ -156,8 +159,8 @@ end
 
 #=
 Escogemos 2 flotantes entre 0 y 1, uno para la coordenada x y uno para la coordenada y, si
-el de la coordenada y se sale del triángulo lo redefinimos hasta que cumpla la condicion
-y1 < tan(π/3)*x1 (tan(π/3)=sqrt(3)), para que este dentro del tríangulo equilátero.
+el de la coordenada "y" se sale del triángulo lo redefinimos hasta que cumpla la condición
+y1 < tan(π/3)*x1 (tan(π/3)=sqrt(3)), para que esté dentro del tríangulo equilátero.
 =#
 
 begin
@@ -197,8 +200,8 @@ begin
 end
 
 
-for i in 2:100000
-    push!(A, rand([X_1, X_2, X_3 ])) # Paso b, Guardamos A_{i-1}
+for i in 2:10000
+    push!(A, rand([X_1, X_2, X_3 ])) # Paso b. Guardamos A_{i-1}
     push!(Y, (Y[i] + A[i])/2) # Paso c. Guardamos Y_i
     push!(Yx, Y[i+1][1]) # Guardamos la coordenada x de Y_i
     push!(Yy, Y[i+1][2]) # Guardamos la coordenada y de Y_i
@@ -208,7 +211,7 @@ end
 # muuuuchos puntos.
 
 scatter(Yx,Yy, 
-    ms = 1.0, msw = 0.1,
+    ms = 1, msw = 0.1,
     aspect_ratio = :equal,
     color = :purple, legend=:none,
     framestyle = :none)
@@ -233,8 +236,8 @@ end
 #=
 Para hacer el inciso a de nuevo:
 Escogemos 2 flotantes entre 0 y 1, uno para la coordenada x y uno para la coordenada y, si
-el de la coordenada y se sale del triángulo lo redefinimos hasta que cumpla la condicion
-y1 < tan(π/3)*x1 (tan(π/3)=sqrt(3)), para que este dentro del tríangulo equilátero.
+el de la coordenada y se sale del triángulo lo redefinimos hasta que cumpla la condición
+y1 < tan(π/3)*x1 (tan(π/3)=sqrt(3)), para que esté dentro del tríangulo equilátero.
 =#
 
 begin
@@ -266,7 +269,7 @@ end
 
 
 for i in 2:100000
-    push!(A3, rand([X_1, X_2, X_3 ])) # Paso b, Guardamos A_{i-1}3
+    push!(A3, rand([X_1, X_2, X_3 ])) # Paso b. Guardamos A_{i-1}3
     push!(Y3, (Y3[i] + A3[i])/3) # Encontramos punto tercio. Guardamos Y_i3
     push!(Yx3, Y3[i+1][1]) # Guardamos la coordenada x de Y_i3
     push!(Yy3, Y3[i+1][2]) # Guardamos la coordenada y de Y_i3
