@@ -208,9 +208,10 @@ end
 # muuuuchos puntos.
 
 scatter(Yx,Yy, 
-    ms = 1.0, msw = 0.1, 
-    xlabel = "x", ylabel = "y",
-    color = :purple, legend=:none)
+    ms = 1.0, msw = 0.1,
+    aspect_ratio = :equal,
+    color = :purple, legend=:none,
+    framestyle = :none)
 
 
 # ## 3. Proporción distinta
@@ -237,45 +238,44 @@ y1 < tan(π/3)*x1 (tan(π/3)=sqrt(3)), para que este dentro del tríangulo equil
 =#
 
 begin
-    x1 = rand()
-    y1 = rand()
-    while y1 >= sqrt(3)*x1
-        y1 = rand()
+    x13 = rand()
+    y13 = rand()
+    while y13 >= sqrt(3)*x13
+        y13 = rand()
     end
 end
-Y_0 = [x1, y1]
+Y_03 = [x13, y13]
 
-#Eligo al azar uno de los vertices y le llamo A_0, para hacer el inciso b.
-A_0 = rand([X_1, X_2, X_3 ])
+#Eligo al azar uno de los vertices y le llamo A_03, para hacer el inciso b.
+A_03 = rand([X_1, X_2, X_3 ])
 #Ahora, en vez de encontrar el punto medio, tomaremos el punto tercio.
-Y_1 = (Y_0 + A_0)/2
+Y_13 = (Y_03 + A_03)/3
 
 #=
-Ahora, vamos a guardar todos los iterados A_r en un vector de vectores A y todas las Y_r en un vector de
-vectores Y:
+Ahora, vamos a guardar todos los iterados A_r3 en un vector de vectores A3 y todas las Y_r3 en un vector de
+vectores Y3:
 
 Primero guardamos lo que ya tenemos:
 =#
 begin
-    A = [A_0]
-    Y = [Y_0, Y_1]
-    Yx = [Y_0[1], Y_1[1]]
-    Yy = [Y_0[2], Y_1[2]]
+    A3 = [A_03]
+    Y3 = [Y_03, Y_13]
+    Yx3 = [Y_03[1], Y_13[1]]
+    Yy3 = [Y_03[2], Y_13[2]]
 end
 
 
 for i in 2:100000
-    push!(A, rand([X_1, X_2, X_3 ])) # Paso b, Guardamos A_{i-1}
-    push!(Y, (Y[i] + A[i])/3) # Encontramos punto tercio. Guardamos Y_i
-    push!(Yx, Y[i+1][1]) # Guardamos la coordenada x de Y_i
-    push!(Yy, Y[i+1][2]) # Guardamos la coordenada y de Y_i
+    push!(A3, rand([X_1, X_2, X_3 ])) # Paso b, Guardamos A_{i-1}3
+    push!(Y3, (Y3[i] + A3[i])/3) # Encontramos punto tercio. Guardamos Y_i3
+    push!(Yx3, Y3[i+1][1]) # Guardamos la coordenada x de Y_i3
+    push!(Yy3, Y3[i+1][2]) # Guardamos la coordenada y de Y_i3
 end
 
-# e. Grafiquen todos los iterados $Y_n$ que guardaron, considerando
-# muuuuchos puntos.
+#Graficando los Y_{r}3
 
-using Pkg
-using Plots #cargamos la paquetería Plots
-
-scatter(Yx,Yy, ms = 1.0, msw = 0.1, color = :blue, legend=:none)
+scatter(Yx3,Yy3, ms = 0.5, msw = 0.1,
+    aspect_ratio = :equal,
+    color = :blue, legend=:none,
+    framestyle = :none)
 
