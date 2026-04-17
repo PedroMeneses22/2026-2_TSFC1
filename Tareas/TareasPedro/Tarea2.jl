@@ -89,8 +89,6 @@ begin
 end
 
 
-promote((Dual(2.5,2.3),3.4))
-
 #
 # e. Definan las funciones `fun` y `der` que, al ser aplicadas a un `Dual` devuelven
 # la parte que corresponde a la función y la parte que corresponde a la derivada
@@ -208,7 +206,10 @@ der(gd) == g′(2)
 # - Al igual que antes, construyan algún conjunto de pruebas que muestre, de manera
 # sencilla, que lo que hicieron da lo que uno esperaría obtener.
 
+
+#Importo desde base las funciones elementales usuales.
 import Base: exp, log, tan, sin, cos, sinh, cosh, tanh, sqrt
+#Comienzo a definir:
 begin
 
     exp(u::Dual) = Dual(exp(u.fun), exp(u.fun)*u.der)
@@ -264,7 +265,7 @@ end
     @test fun(iden) ≈ 1.0
     @test abs(der(iden)) ≈ 0
 
-    # Test para regla de la cadena con las funciones elementales
+    # Test para regla de la cadena con las funciones elementales:
     # Exponencial
     @test fun(exp(d2)) ≈ exp(h(x0))
     @test der(exp(d2)) ≈ exp(h(x0)) * h′(x0)
